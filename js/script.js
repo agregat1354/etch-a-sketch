@@ -9,9 +9,12 @@ function cellStandardColoring(event) {
 }
 
 function cellShadingColoring(event) {
+    if (event.target.style.backgroundColor === '') {
+        event.target.style.cssText += `background-color: rgb(255,255,255);`;
+    }
     const moreBlack = moreBlackValue(event.target.style.backgroundColor);
     event.target.style.removeProperty('background-color');
-    event.target.style.cssText += `background-color: rgb(${moreBlack},${moreBlack},${moreBlack});`;
+    event.target.style.cssText += `background-color: rgb(${moreBlack[0]},${moreBlack[1]},${moreBlack[2]});`;
 }
 
 function cellRandomColoring(event) {
@@ -50,17 +53,24 @@ function getRandomRgbValue() {
 }
 
 function parseRgbValue(rgb) {
-    return parseFloat(rgb.split(',')[1]);
+    const rgbArr = [];
+    const re = /\d+/g;
+    rgbArr.push(re.exec(rgb)[0]);
+    rgbArr.push(re.exec(rgb)[0]);
+    rgbArr.push(re.exec(rgb)[0]);
+    return rgbArr;
 }
 
 
 function moreBlackValue(currentValue) {
-    let colorVal;
-    if (currentValue === '') colorVal = 229.5;
-    else colorVal = parseRgbValue(currentValue);
-    colorVal -= 25.5;
-    if (colorVal < 0.0) return 0.0;
-    return colorVal;
+    let rgbs = parseRgbValue(currentValue);
+
+    for (let i = 0; i < rgbs.length; i++) {
+        rgbs[i] -= 25.5;
+        if (rgbs[i] < 0) rgbs[i] = 0;
+    }
+
+    return rgbs;
 }
 
 
